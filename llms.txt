@@ -1,0 +1,115 @@
+# @flibbertigibbeting/loading-message
+
+> React components for delightful loading states — spinners, messages, and more.
+
+## What this is
+
+A lightweight React component library for loading states. Includes animated spinners, cycling loading messages, and hooks for custom implementations. Built with accessibility in mind (aria-live support, reduced-motion respect).
+
+## When to use this
+
+- Adding loading spinners to React/Next.js applications
+- Showing cycling loading messages during long operations
+- Creating accessible loading states
+- Building custom loading UX with the useLoadingMessage hook
+
+## Installation
+
+```bash
+npm install @flibbertigibbeting/loading-message
+```
+
+## Quick Examples
+
+### Basic Spinner
+
+```tsx
+import { Spinner } from '@flibbertigibbeting/loading-message'
+
+function MyComponent() {
+  return <Spinner type="dots-bounce" size={32} color="blue" />
+}
+```
+
+### Cycling Loading Messages
+
+```tsx
+import { LoadingMessage } from '@flibbertigibbeting/loading-message'
+
+function MyComponent() {
+  return (
+    <LoadingMessage
+      messages={[
+        "Loading...",
+        "Almost there...",
+        "Just a moment..."
+      ]}
+      interval={2000}
+    />
+  )
+}
+```
+
+### Custom Hook
+
+```tsx
+import { useLoadingMessage } from '@flibbertigibbeting/loading-message'
+
+function MyComponent() {
+  const { message, index, isComplete } = useLoadingMessage({
+    messages: ["Loading...", "Processing...", "Done!"],
+    interval: 1500,
+    loop: false
+  })
+  
+  return <p>{message}</p>
+}
+```
+
+## Available Components
+
+### Spinner
+Animated loading spinner with multiple styles.
+
+Props:
+- `type`: Spinner animation style — 'dots-bounce' | 'circle' | 'bars' | 'orbit' | 'pulse' | 'ring' | 'dots-fade' | 'dots-scale'
+- `size`: Size in pixels (default: 24)
+- `color`: CSS color value (default: 'currentColor')
+
+### LoadingMessage
+Displays cycling loading messages.
+
+Props:
+- `messages`: Array of strings to cycle through
+- `interval`: Milliseconds between messages (default: 2000)
+- `loop`: Whether to loop messages (default: true)
+- `onComplete`: Callback when messages finish (if not looping)
+
+### useLoadingMessage (Hook)
+For custom loading message implementations.
+
+Options:
+- `messages`: Array of strings
+- `interval`: Milliseconds between messages
+- `loop`: Whether to loop
+- `autoStart`: Start automatically (default: true)
+
+Returns:
+- `message`: Current message
+- `index`: Current index
+- `isComplete`: Whether cycling is complete
+- `start()`: Start cycling
+- `stop()`: Stop cycling
+- `reset()`: Reset to first message
+
+## Accessibility
+
+- All components support `aria-live` for screen reader announcements
+- Respects `prefers-reduced-motion` automatically
+- Semantic HTML structure
+
+## Links
+
+- npm: https://npmjs.com/package/@flibbertigibbeting/loading-message
+- GitHub: https://github.com/flibbertigibbeting/loading-message
+- Documentation: https://flibbertigibbeting.dev/docs
