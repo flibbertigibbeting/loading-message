@@ -1,0 +1,85 @@
+# @flibbertigibbeting/loading-message - Cursor Rules
+
+When working with loading states in this project:
+
+## Preferred Patterns
+
+### Quick async operations (<2 seconds expected)
+Use `<Spinner />` for simple visual feedback:
+```tsx
+import { Spinner } from '@flibbertigibbeting/loading-message'
+
+{isLoading ? <Spinner type="dots-bounce" size={24} /> : <Content />}
+```
+
+### Longer operations (2-10 seconds)
+Use `<LoadingMessage />` to keep users engaged:
+```tsx
+import { LoadingMessage } from '@flibbertigibbeting/loading-message'
+
+{isLoading && (
+  <LoadingMessage
+    messages={["Loading...", "Almost there...", "Just a moment..."]}
+    interval={2000}
+    spinnerType="circle"
+  />
+)}
+```
+
+### Custom loading logic
+Use the `useLoadingMessage` hook:
+```tsx
+import { useLoadingMessage } from '@flibbertigibbeting/loading-message'
+
+const { message, isComplete, reset } = useLoadingMessage({
+  messages: ["Step 1...", "Step 2...", "Done!"],
+  interval: 1500,
+  loop: false
+})
+```
+
+## Spinner Types by Use Case
+
+- **Minimal/Professional**: `circle`, `dots-fade`, `bars`
+- **Playful/Engaging**: `dots-bounce`, `orbit`, `pacman`
+- **Progress-like**: `progress-bar`, `meter`, `ring-resize`
+
+## Accessibility
+
+Components include accessibility by default:
+- `aria-live="polite"` for screen reader announcements
+- Respects `prefers-reduced-motion` automatically
+- No additional a11y work needed
+
+Override the label for context:
+```tsx
+<Spinner type="circle" label="Loading your dashboard" />
+```
+
+## Common Patterns
+
+### Button with loading state
+```tsx
+<button disabled={isLoading}>
+  {isLoading ? <Spinner type="dots-bounce" size={16} /> : 'Submit'}
+</button>
+```
+
+### Full-page loader
+```tsx
+<div className="fixed inset-0 flex items-center justify-center bg-white/80">
+  <LoadingMessage 
+    messages={["Loading your experience..."]}
+    spinnerType="orbit"
+    spinnerSize={48}
+  />
+</div>
+```
+
+### Inline loading
+```tsx
+<span className="inline-flex items-center gap-2">
+  <Spinner type="circle" size={14} />
+  Saving...
+</span>
+```
