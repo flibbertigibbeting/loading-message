@@ -1,36 +1,34 @@
 # @flibbertigibbeting/loading-message
 
-> Delightful loading messages for React apps
-
-Drop-in component for loading states that don't suck.
+React components for delightful loading messages and 50+ customizable spinners from [flibbertigibbeting.dev](https://flibbertigibbeting.dev).
 
 ## Installation
 
 ```bash
 npm install @flibbertigibbeting/loading-message
-# or
-yarn add @flibbertigibbeting/loading-message
-# or
-pnpm add @flibbertigibbeting/loading-message
 ```
 
-## Basic Usage
+## Components
+
+### LoadingMessage
+
+Displays delightful loading messages with optional spinner.
 
 ```tsx
 import { LoadingMessage } from '@flibbertigibbeting/loading-message'
 
-function MyComponent() {
-  const [isLoading, setIsLoading] = useState(true)
-
-  if (isLoading) {
-    return <LoadingMessage />
-  }
-
-  return <div>Content loaded!</div>
+function App() {
+  return (
+    <LoadingMessage 
+      category="tech"
+      spinnerType="dots-bounce"
+      spinnerColor="#3b82f6"
+    />
+  )
 }
 ```
 
-## Props
+#### Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -39,113 +37,105 @@ function MyComponent() {
 | `safe` | `boolean` | `true` | Only show SFW messages |
 | `interval` | `number` | `3000` | Time between message changes (ms) |
 | `showSpinner` | `boolean` | `true` | Show animated spinner |
+| `spinnerType` | `SpinnerType` | `'circle'` | Spinner animation style |
+| `spinnerSize` | `number` | `20` | Spinner size in pixels |
+| `spinnerColor` | `string` | `'currentColor'` | Spinner color |
+| `spinnerSpeed` | `number` | `1` | Animation speed multiplier |
 | `className` | `string` | - | Custom CSS classes |
-| `onMessageChange` | `function` | - | Callback when message updates |
+| `onMessageChange` | `(message) => void` | - | Callback when message updates |
 
-## Examples
+### Spinner
 
-### Filtered by Category
-
-```tsx
-<LoadingMessage category="tech" tone="nerdy" />
-```
-
-### Custom Refresh Interval
+Standalone customizable spinner with 50+ animation styles.
 
 ```tsx
-<LoadingMessage
-  interval={5000} // Change every 5 seconds
-  showSpinner={false}
-/>
+import { Spinner } from '@flibbertigibbeting/loading-message'
+
+function App() {
+  return <Spinner type="dots-bounce" size={48} color="#3b82f6" />
+}
 ```
 
-### With Message Callback
+#### Props
 
-```tsx
-<LoadingMessage
-  onMessageChange={(msg) => {
-    console.log('New message:', msg.message)
-    analytics.track('loading_message_shown', { category: msg.category })
-  }}
-/>
-```
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `type` | `SpinnerType` | `'circle'` | Spinner animation style |
+| `size` | `number` | `40` | Size in pixels |
+| `color` | `string` | `'currentColor'` | Any valid CSS color |
+| `speed` | `number` | `1` | Animation speed multiplier |
+| `className` | `string` | - | Additional CSS class |
+| `style` | `CSSProperties` | - | Inline style overrides |
+| `label` | `string` | `'Loading'` | Accessible label |
 
-### Custom Styling
+## Available Spinner Types
 
-```tsx
-<LoadingMessage className="text-2xl font-bold text-purple-500" />
-```
+### Circle (10 types)
+`circle` · `circle-fade` · `circle-dots` · `circle-pulse` · `circle-notch` · `circle-quarter` · `circle-half` · `circle-split` · `dual-ring` · `ring-resize`
+
+### Dots (10 types)
+`dots-bounce` · `dots-fade` · `dots-pulse` · `dots-wave` · `dots-flashing` · `dots-elastic` · `dots-carousel` · `dots-scale` · `dots-orbit` · `dots-shuffle`
+
+### Bars (6 types)
+`bars` · `bars-fade` · `bars-scale` · `bars-wave` · `bars-pulse` · `bars-rotate`
+
+### Squares (8 types)
+`square-spin` · `square-fold` · `squares-grid` · `squares-shift` · `cube` · `cube-grid` · `blocks-wave` · `blocks-shuffle`
+
+### Lines (4 types)
+`line-wobble` · `line-scale` · `line-wave` · `line-bounce`
+
+### Creative (14 types)
+`heart-beat` · `hourglass` · `infinity` · `ripple` · `orbit` · `atom` · `dna` · `pacman` · `clock` · `gear` · `flower` · `spiral` · `windmill` · `seesaw`
+
+### Progress (3 types)
+`progress-bar` · `progress-orbit` · `meter`
 
 ## Hooks
 
-Need more control? Use the hook directly:
+### useLoadingMessage
+
+Hook for fetching loading messages directly.
 
 ```tsx
 import { useLoadingMessage } from '@flibbertigibbeting/loading-message'
 
-function CustomLoader() {
+function App() {
   const { message, isLoading, refresh } = useLoadingMessage({
-    category: 'existential',
-    interval: 4000
+    category: 'tech',
+    interval: 5000,
   })
 
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <p>{message?.message}</p>
-      <button onClick={refresh}>
-        Get another
-      </button>
-    </div>
-  )
+  return <p>{message?.message}</p>
 }
 ```
 
-### Hook Return Values
+## Utilities
 
-| Value | Type | Description |
-|-------|------|-------------|
-| `message` | `Message \| null` | Current message object |
-| `isLoading` | `boolean` | True while fetching |
-| `error` | `Error \| null` | Error if fetch failed |
-| `refresh` | `function` | Manually fetch new message |
+### allSpinnerTypes
 
-## TypeScript
-
-Full TypeScript support included. Import types as needed:
+Array of all 55 available spinner type names.
 
 ```tsx
-import type {
-  Message,
-  LoadingMessageProps,
-  UseLoadingMessageOptions
-} from '@flibbertigibbeting/loading-message'
+import { allSpinnerTypes } from '@flibbertigibbeting/loading-message'
 
-// Message type
-interface Message {
-  message: string
-  category: string
-  tags: string[]
-  tone: string
-  safe: boolean
-}
+// ['circle', 'circle-fade', 'circle-dots', ...]
 ```
 
-## Categories
+### spinnerCategories
 
-- `whimsical` - Playful and magical
-- `tech` - Developer humor
-- `existential` - Deep thoughts
-- `absurd` - Pure nonsense
-- `scifi` - Sci-fi references
-- `systems` - Classic computing
+Spinner types organized by category.
 
-## Tones
+```tsx
+import { spinnerCategories } from '@flibbertigibbeting/loading-message'
 
-- `whimsical` - Light & airy
-- `cheeky` - Playfully bold
-- `dry` - Deadpan humor
-- `nerdy` - Reference-heavy
+// {
+//   circle: ['circle', 'circle-fade', ...],
+//   dots: ['dots-bounce', 'dots-fade', ...],
+//   ...
+// }
+```
 
 ## License
 
-MIT
+MIT © [flibbertigibbeting](https://flibbertigibbeting.dev)

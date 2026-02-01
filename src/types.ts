@@ -30,6 +30,8 @@ export interface UseLoadingMessageOptions {
   manual?: boolean
 }
 
+import type { SpinnerType } from './spinners/types'
+
 /**
  * Props for the LoadingMessage component
  */
@@ -44,6 +46,14 @@ export interface LoadingMessageProps {
   interval?: number
   /** Show animated spinner (default: true) */
   showSpinner?: boolean
+  /** Spinner type (default: 'circle') */
+  spinnerType?: SpinnerType
+  /** Spinner size in pixels (default: matches text) */
+  spinnerSize?: number
+  /** Spinner color (default: 'currentColor') */
+  spinnerColor?: string
+  /** Spinner animation speed multiplier (default: 1) */
+  spinnerSpeed?: number
   /** Custom CSS classes */
   className?: string
   /** Callback when message updates */

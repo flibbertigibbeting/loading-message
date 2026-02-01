@@ -1,9 +1,19 @@
 import { useEffect, useRef } from 'react'
 import { useLoadingMessage } from './useLoadingMessage'
+import { Spinner } from './Spinner'
 import type { LoadingMessageProps } from './types'
 
 /**
- * A component that displays delightful loading messages
+ * A component that displays delightful loading messages with customizable spinners
+ * 
+ * @example
+ * ```tsx
+ * <LoadingMessage 
+ *   category="tech" 
+ *   spinnerType="dots-bounce" 
+ *   spinnerColor="#3b82f6" 
+ * />
+ * ```
  */
 export function LoadingMessage({
   category,
@@ -11,6 +21,10 @@ export function LoadingMessage({
   safe = true,
   interval = 3000,
   showSpinner = true,
+  spinnerType = 'circle',
+  spinnerSize,
+  spinnerColor = 'currentColor',
+  spinnerSpeed = 1,
   className = '',
   onMessageChange,
 }: LoadingMessageProps) {
@@ -30,34 +44,24 @@ export function LoadingMessage({
     }
   }, [message])
 
-  const spinnerStyle: React.CSSProperties = {
-    display: 'inline-block',
-    width: '1em',
-    height: '1em',
-    border: '2px solid currentColor',
-    borderRightColor: 'transparent',
-    borderRadius: '50%',
-    animation: 'flibbertigibbeting-spin 0.75s linear infinite',
-    marginRight: '0.5em',
-  }
-
   const containerStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: '0.5em',
   }
 
   return (
-    <>
-      <style>
-        {`@keyframes flibbertigibbeting-spin {
-          to { transform: rotate(360deg); }
-        }`}
-      </style>
-      <div style={containerStyle} className={className}>
-        {showSpinner && <span style={spinnerStyle} aria-hidden="true" />}
-        <span>{isLoading && !message ? 'Loading...' : message?.message}</span>
-      </div>
-    </>
+    <div style={containerStyle} className={className}>
+      {showSpinner && (
+        <Spinner
+          type={spinnerType}
+          size={spinnerSize ?? 20}
+          color={spinnerColor}
+          speed={spinnerSpeed}
+        />
+      )}
+      <span>{isLoading && !message ? 'Loading...' : message?.message}</span>
+    </div>
   )
 }
