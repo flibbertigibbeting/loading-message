@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Spinner } from './Spinner'
-import { LoadingMessage } from './LoadingMessage'
 import type { SpinnerType } from './spinners/types'
 
 export interface AdaptiveLoaderProps {
@@ -14,6 +13,8 @@ export interface AdaptiveLoaderProps {
   showProgress?: boolean
   /** Messages to cycle through for slow connections */
   slowMessages?: string[]
+  /** Message cycle interval in ms */
+  messageInterval?: number
   /** Spinner type for fast connections */
   fastSpinnerType?: SpinnerType
   /** Spinner type for slow connections */
@@ -160,6 +161,28 @@ export function usePrefersReducedMotion(): boolean {
 }
 
 /**
+ * Simple hook for cycling through messages locally
+ */
+function useMessageCycler(messages: string[], interval: number, isActive: boolean) {
+  const [index, setIndex] = useState(0)
+
+  useEffect(() => {
+    if (!isActive || messages.length === 0) {
+      setIndex(0)
+      return
+    }
+
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % messages.length)
+    }, interval)
+
+    return () => clearInterval(timer)
+  }, [messages, interval, isActive])
+
+  return messages[index] || messages[0]
+}
+
+/**
  * Adaptive loading component that adjusts UI based on connection speed
  */
 export function AdaptiveLoader({
@@ -173,6 +196,7 @@ export function AdaptiveLoader({
     'Taking a bit longer than usual...',
     'Almost there...',
   ],
+  messageInterval = 3000,
   fastSpinnerType = 'circle',
   slowSpinnerType = 'dots-bounce',
   spinnerSize = 32,
@@ -212,6 +236,12 @@ export function AdaptiveLoader({
   useEffect(() => {
     onConnectionChange?.(connectionType)
   }, [connectionType, onConnectionChange])
+
+  // Determine if we should show slow UI
+  const isSlow = connectionType === 'slow' || showExtendedUI
+
+  // Cycle messages for slow UI
+  const currentMessage = useMessageCycler(slowMessages, messageInterval, isLoading && isSlow && showProgress)
 
   // Not loading - show children
   if (!isLoading) {
@@ -255,8 +285,6 @@ export function AdaptiveLoader({
   }
 
   // Slow connection or extended loading time
-  const isSlow = connectionType === 'slow' || showExtendedUI
-
   if (isSlow && showProgress) {
     return (
       <div 
@@ -264,19 +292,19 @@ export function AdaptiveLoader({
         role="status" 
         aria-live="polite"
         aria-label={label}
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
       >
-        <LoadingMessage
-          messages={slowMessages}
-          interval={3000}
-          spinnerType={slowSpinnerType}
-          spinnerSize={spinnerSize}
-          spinnerColor={spinnerColor}
+        <Spinner 
+          type={slowSpinnerType} 
+          size={spinnerSize} 
+          color={spinnerColor}
         />
+        <p style={{ margin: 0 }}>{currentMessage}</p>
         {loadingDuration > 5000 && (
           <p style={{ 
             fontSize: '0.875rem', 
             opacity: 0.7, 
-            marginTop: '0.5rem' 
+            margin: 0 
           }}>
             This is taking longer than expected...
           </p>
