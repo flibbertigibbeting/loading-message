@@ -36,11 +36,13 @@ import type { SpinnerType } from './spinners/types'
  * Props for the LoadingMessage component
  */
 export interface LoadingMessageProps {
-  /** Filter messages by category */
+  /** Custom messages to cycle through (overrides API fetch) */
+  messages?: string[]
+  /** Filter messages by category (ignored if messages provided) */
   category?: string
-  /** Filter messages by tone */
+  /** Filter messages by tone (ignored if messages provided) */
   tone?: string
-  /** Only show SFW messages (default: true) */
+  /** Only show SFW messages (default: true, ignored if messages provided) */
   safe?: boolean
   /** Time between message changes in ms (default: 3000) */
   interval?: number
